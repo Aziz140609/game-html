@@ -1,4 +1,4 @@
-var canvas = document.getElementById("canvas");
+var canvas = document.getElementById("canvas"); // PERBAIKAN
 var ctx = canvas.getContext("2d");
 
 // Variabel
@@ -16,32 +16,10 @@ var bulletY = posY;
 var musuhMenembak = false;
 var Score = 0;
 var nyawa = 3;
-var RandomX = 0;
-var RandomY = 0;
 
-
-// Fungsi tampilan
-
-function angkaRandom(min, max) {
-    return Math.floor(Math.random() * (max - min) + min);
-  }
-
-  function hapusKotak() {
-    ctx.clearRect(RandomX, RandomY, 100, 100);
-  }
-
-  function tampilkanKotak() {
-    RandomX = angkaRandom(150, 850);
-    RandomY = angkaRandom(100, 660);
-  
-    ctx.fillStyle = "blue";
-    ctx.fillRect(posisiX, posisiY, 100, 100);
-  }
-
-function angkaRandom(max,min){
-    return Math.floor(Math.random() * (max - min) + min)
-    
-}
+// ---------------------
+// FUNGSI GAMBAR
+// ---------------------
 
 function Mati() {
     ctx.save();
@@ -89,6 +67,7 @@ function drawAll() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawTriangle(posX, posY);
     drawKotak(MusuhX, MusuhY);
+
     if (Tembak) drawBullet(bulletX, bulletY);
     if (musuhMenembak) drawBulletMusuh(musuh_PeluruX, musuh_PeluruY);
 
@@ -96,26 +75,14 @@ function drawAll() {
     ctx.font = "20px Arial";
     ctx.fillText("Score = " + Score, 10, 30);
     ctx.fillText("Nyawa = " + nyawa, 10, 60);
-
-    setInterval(() => {
-        if (medkit) {
-          // Jika medkit sedang tampil, hilangkan
-          hapusKotak();
-          medkit = false;
-        } else {
-          // Jika medkit sedang tidak tampil, munculkan
-          tampilkanKotak();
-          medkit = true;
-        }
-      }, 10000);
 }
 
 // ---------------------
-// Game Loop utama
+// GAME LOOP
+// ---------------------
 
 setInterval(() => {
     if (nyawa > 0) {
-        // Semua logika permainan hanya berjalan jika nyawa > 0
 
         // Gerak peluru player
         if (Tembak) {
@@ -133,7 +100,7 @@ setInterval(() => {
             }
         }
 
-        // Gerak peluru musuh
+        // Musuh menembak
         if (!musuhMenembak && Math.abs(MusuhY - posY) <= 50) {
             musuhMenembak = true;
             musuh_PeluruX = MusuhX;
@@ -143,7 +110,7 @@ setInterval(() => {
         if (musuhMenembak) {
             musuh_PeluruX -= 10;
 
-            // Cek tabrakan dengan player
+            // Tabrak player
             if (
                 musuh_PeluruX <= posX + 50 &&
                 musuh_PeluruX + 50 >= posX &&
@@ -157,7 +124,7 @@ setInterval(() => {
             if (musuh_PeluruX < -100) musuhMenembak = false;
         }
 
-        // Gerak musuh
+        // Gerak musuh naik-turun
         if (gerak) {
             MusuhY += gerak_Musuh;
             if (MusuhY + 100 > canvas.height) gerak = false;
@@ -168,14 +135,13 @@ setInterval(() => {
 
         drawAll();
     } else {
-        // Kalau nyawa habis, tampilkan Game Over
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         Mati();
     }
 }, 20);
 
 // ---------------------
-// Kontrol player
+// KONTROL PLAYER
 // ---------------------
 window.addEventListener("keydown", (e) => {
     if (nyawa > 0) {
@@ -189,6 +155,7 @@ window.addEventListener("keydown", (e) => {
             bulletX = posX;
             bulletY = posY;
         }
+
         drawAll();
     }
 });
